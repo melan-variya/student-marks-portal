@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${mode} == 'create' ? 'Add Student' : 'Edit Student'">Student Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Student Portal</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" th:href="@{/students}">Students</a></li>
+      </ul>
+      <form th:action="@{/logout}" method="post" class="d-inline">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+    <h1 class="h4 mb-3" th:text="${mode} == 'create' ? 'Add New Student' : 'Edit Student'">Student</h1>
+
+    <form th:action="${mode} == 'create' ? @{/students} : @{'/students/' + ${student.id} + '/edit'}"
+          th:object="${student}" method="post" class="needs-validation" novalidate>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" th:field="*{name}" maxlength="50" required>
+                <div class="invalid-feedback">Name is required (max 50).</div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Contact (username for student)</label>
+                <input type="text" class="form-control" th:field="*{contact}" maxlength="50">
+                <div class="form-text">For STUDENT login linkage. Example: alice</div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" th:field="*{city}" maxlength="50">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Math</label>
+                <input type="number" class="form-control" th:field="*{math}" min="0" max="100" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Science</label>
+                <input type="number" class="form-control" th:field="*{science}" min="0" max="100" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">English</label>
+                <input type="number" class="form-control" th:field="*{english}" min="0" max="100" required>
+            </div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Save</button>
+            <a class="btn btn-secondary" th:href="@{/students}">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+// Bootstrap client-side validation
+(() => {
+  'use strict'
+  const forms = document.querySelectorAll('.needs-validation')
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
